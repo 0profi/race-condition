@@ -6,11 +6,8 @@
 #include <chrono>
 #include <optional>
 
-// Глобальный вектор для хранения чисел
 std::vector<int> global_vector;
-// Мьютекс для синхронизации доступа к вектору
 std::mutex vector_mutex;
-// Флаг для управления работой потоков
 bool running = true;
 
 class Generator {
@@ -34,8 +31,8 @@ public:
 
 private:
     std::thread generator_thread;
-    std::mt19937 gen; // Генератор случайных чисел
-    std::uniform_int_distribution<int> dist; // Диапазон случайных чисел
+    std::mt19937 gen;
+    std::uniform_int_distribution<int> dist;
 
     void generate() {
         while (running) {
@@ -80,7 +77,7 @@ private:
             if (value.has_value()) {
                 process_value(value.value());
             } else {
-                std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Если вектор пуст, ждем
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
             }
         }
     }
@@ -94,12 +91,12 @@ private:
             return value;
         }
         vector_mutex.unlock();
-        return std::nullopt; // Вектор пуст, возвращаем "ничего"
+        return std::nullopt;
     }
 
     void process_value(int value) {
         std::cout << "Потребитель " << consumer_id << " обрабатывает число: " << value << std::endl;
-        std::this_thread::sleep_for(std::chrono::milliseconds(300)); // Обработка числа
+        std::this_thread::sleep_for(std::chrono::milliseconds(300));
     }
 };
 
@@ -107,7 +104,6 @@ int main() {
     Generator generator;
     generator.start();
 
-    // Создаём три объекта Consumer
     Consumer consumer1(1);
     Consumer consumer2(2);
     Consumer consumer3(3);
